@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>RI 2025 to 2025 Migration (SFTP export/import, DB migration)</title>
+    <title>RI 2025 to 2025 Migration</title>
     <style>
       :root {
         --bg: #0b0f14;
@@ -229,11 +229,7 @@
   <body>
     <div class="wrap">
       <header>
-        <h1>RI 2025 to 2025 Migration (SFTP export/import, DB migration)</h1>
-        <p>
-          This runbook assumes you will always migrate the configuration database, and that you have technician-mode access
-          (root shell) on both appliances. File transfer is done via the <b>sftp</b> user and the jail at <b>/var/sftp/files</b>.
-        </p>
+        <h1>RI 2025 to 2025 Migration</h1>
         <div class="pillrow">
           <span class="pill"><b>SFTP user</b> sftp</span>
           <span class="pill"><b>SFTP password</b> idautoAdmin</span>
@@ -256,7 +252,7 @@
           <h2>Source appliance steps (create export archive in /var/sftp/files)</h2>
 
           <div class="note warn">
-            <strong>Run in technician mode (root shell).</strong>
+            <strong>Run in technician mode.</strong>
             These commands download the bundle, extract it, then generate an export archive in the sftp jail.
           </div>
 
@@ -273,18 +269,10 @@ cd ri2025-migration-bundle
 chmod 700 *.sh</code></pre>
           </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Source: set sftp password to idautoAdmin (optional if already set)</div>
-              <button class="btn" data-copy="src_set_sftp_pwd">Copy</button>
-            </div>
-            <pre><code id="src_set_sftp_pwd">passwd sftp</code></pre>
-            <div class="small">When prompted, enter idautoAdmin (twice). If your appliance uses a different supported method, use that instead.</div>
-          </div>
 
           <div class="cmd">
             <div class="cmdtop">
-              <div class="label">Source: export to a predictable filename (recommended)</div>
+              <div class="label">Source: export to a filename</div>
               <button class="btn primary" data-copy="src_export">Copy</button>
             </div>
             <pre><code id="src_export">./export-appliance-2025.sh --out-file=ri-export.tar.gz</code></pre>
@@ -308,8 +296,8 @@ chmod 700 *.sh</code></pre>
           <h2>Target appliance steps (pull archive via sftp and import, always migrate DB)</h2>
 
           <div class="note warn">
-            <strong>Run in technician mode (root shell).</strong>
-            The migration command will prompt for the sftp password unless your environment supports non-interactive auth.
+            <strong>Run in technician mode.</strong>
+            The migration command will prompt for the sftp password.
           </div>
 
           <div class="cmd">
@@ -325,130 +313,22 @@ cd ri2025-migration-bundle
 chmod 700 *.sh</code></pre>
           </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Target: optional sftp connectivity check</div>
-              <button class="btn" data-copy="tgt_sftp_check">Copy</button>
-            </div>
-            <pre><code id="tgt_sftp_check">sftp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "sftp@SOURCE_HOST"</code></pre>
-            <div class="small">Type idautoAdmin when prompted, then run: <b>ls</b> and <b>bye</b>.</div>
-          </div>
+         
 
           <div class="cmd">
             <div class="cmdtop">
-              <div class="label">Target: migrate (always migrate DB)</div>
+              <div class="label">Target: migrate</div>
               <button class="btn primary" data-copy="tgt_migrate_db">Copy</button>
             </div>
             <pre><code id="tgt_migrate_db">./migrate-appliance-2025.sh --src-host=SOURCE_HOST --src-sftp-file=files/ri-export.tar.gz --migrate-db</code></pre>
-            <div class="small">When prompted for the sftp password, enter: <b>idautoAdmin</b>.</div>
+            <div class="small">When prompted for the sftp password, enter the password.</div>
           </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Target: start RI and verify</div>
-              <button class="btn" data-copy="tgt_start_check">Copy</button>
-            </div>
-            <pre><code id="tgt_start_check">systemctl start rapididentity
-systemctl status rapididentity --no-pager
-journalctl -u rapididentity -n 200 --no-pager</code></pre>
-          </div>
-
-          <div class="note">
-            If the target already had a DB installed, and you run with <b>--migrate-db</b>, expect the script to rebuild and load DB data.
-            Use this only when the target DB is disposable and you want it replaced by the source data.
-          </div>
         </section>
 
-        <section>
-          <h2>Quick copy blocks</h2>
-          <p>These are bundled for fewer copy operations.</p>
+      
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">All source commands (setup + export)</div>
-              <button class="btn primary" data-copy="src_all">Copy</button>
-            </div>
-            <pre><code id="src_all">cd /var/tmp
-rm -rf ri2025-migration-bundle ri2025-migration-bundle.tar.gz
-curl -fL -o ri2025-migration-bundle.tar.gz "https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz"
-tar -xzf ri2025-migration-bundle.tar.gz
-cd ri2025-migration-bundle
-chmod 700 *.sh
-
-passwd sftp
-
-./export-appliance-2025.sh --out-file=ri-export.tar.gz
-ls -lh /var/sftp/files/ri-export.tar.gz</code></pre>
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">All target commands (setup + migrate DB + start)</div>
-              <button class="btn primary" data-copy="tgt_all">Copy</button>
-            </div>
-            <pre><code id="tgt_all">cd /var/tmp
-rm -rf ri2025-migration-bundle ri2025-migration-bundle.tar.gz
-curl -fL -o ri2025-migration-bundle.tar.gz "https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz"
-tar -xzf ri2025-migration-bundle.tar.gz
-cd ri2025-migration-bundle
-chmod 700 *.sh
-
-sftp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "sftp@SOURCE_HOST"
-
-./migrate-appliance-2025.sh --src-host=SOURCE_HOST --src-sftp-file=files/ri-export.tar.gz --migrate-db
-
-systemctl start rapididentity
-systemctl status rapididentity --no-pager
-journalctl -u rapididentity -n 200 --no-pager</code></pre>
-          </div>
-        </section>
-
-        <section>
-          <h2>Troubleshooting shortcuts</h2>
-
-          <div class="note warn">
-            If something fails, capture the last 100 lines of script output and the RI journal.
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Disk space and archive size</div>
-              <button class="btn" data-copy="ts_disk">Copy</button>
-            </div>
-            <pre><code id="ts_disk">df -h
-ls -lh /var/sftp/files/ri-export.tar.gz
-du -sh /var/opt/idauto 2>/dev/null || true</code></pre>
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Confirm sftp jail contents (on source)</div>
-              <button class="btn" data-copy="ts_sftp_ls">Copy</button>
-            </div>
-            <pre><code id="ts_sftp_ls">ls -lah /var/sftp/files</code></pre>
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Service status and logs (on target)</div>
-              <button class="btn" data-copy="ts_logs">Copy</button>
-            </div>
-            <pre><code id="ts_logs">systemctl status rapididentity --no-pager
-journalctl -u rapididentity -n 400 --no-pager</code></pre>
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">DB quick checks (on target)</div>
-              <button class="btn" data-copy="ts_db">Copy</button>
-            </div>
-            <pre><code id="ts_db">cat /var/opt/idauto/rapididentity.properties | grep -E '^(db\.type|db\.host|db\.database|db\.username)=' || true</code></pre>
-          </div>
-
-          <div class="footer">
-            Replace SOURCE_HOST with the source appliance hostname or IP. Keep the sftp password consistent across test runs to reduce friction.
-          </div>
-        </section>
+  
       </main>
     </div>
 
