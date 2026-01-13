@@ -71,8 +71,8 @@
       }
       main {
         margin-top: 16px;
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        display: fles;
+        flex-direction: column;
         gap: 14px;
       }
       @media (max-width: 980px) {
@@ -230,21 +230,6 @@
     <div class="wrap">
       <header>
         <h1>RI 2025 to 2025 Migration</h1>
-        <div class="pillrow">
-          <span class="pill"><b>SFTP user</b> sftp</span>
-          <span class="pill"><b>SFTP password</b> idautoAdmin</span>
-          <span class="pill"><b>Bundle URL</b> ri2025-migration-bundle.tar.gz</span>
-          <span class="pill"><b>Always migrate DB</b> yes</span>
-        </div>
-
-        <div class="kv">
-          <div class="k">Source host</div>
-          <div><b>SOURCE_HOST</b> (existing appliance with data)</div>
-          <div class="k">Target host</div>
-          <div><b>TARGET_HOST</b> (new appliance with DB installed)</div>
-          <div class="k">Bundle URL</div>
-          <div><b>BUNDLE_URL</b> https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz</div>
-        </div>
       </header>
 
       <main>
