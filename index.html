@@ -1,335 +1,186 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>RI 2025 to 2025 Migration</title>
-    <style>
-      :root {
-        --bg: #0b0b0b;
-        --panel: #141414;
-        --text: #f2f2f2;
-        --muted: #b9b9b9;
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RI 2025 to 2025 Migration</title>
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: #111111;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
 
-        --accent: #d32f2f;
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 28px 48px;
+    }
 
-        --good: #2e7d32;
-        --warn: #f9a825;
-        --bad: #d32f2f;
+    h1 {
+      font-size: 24px;
+      margin: 0 0 24px;
+      font-weight: 700;
+    }
 
-        --border: #2a2a2a;
-        --codebg: #0f0f0f;
-      }
+    h2 {
+      font-size: 18px;
+      margin: 28px 0 12px;
+      font-weight: 700;
+    }
 
-      * { box-sizing: border-box; }
+    h3 {
+      font-size: 15px;
+      margin: 20px 0 10px;
+      font-weight: 700;
+    }
 
-      body {
-        margin: 0;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
-          "Segoe UI Emoji";
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.45;
-      }
+    p {
+      margin: 8px 0;
+    }
 
-      .wrap {
-        max-width: 1050px;
-        margin: 0 auto;
-        padding: 24px 16px 60px;
-      }
+    ol, ul {
+      margin: 8px 0 14px 22px;
+    }
 
-      header {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-left: 4px solid var(--accent);
-        border-radius: 10px;
-        padding: 16px;
-      }
+    li {
+      margin: 6px 0;
+    }
 
-      h1 {
-        font-size: 20px;
-        margin: 0;
-        letter-spacing: 0.2px;
-      }
+    .note {
+      margin: 12px 0;
+      padding: 10px 12px;
+      border: 1px solid #d9d9d9;
+      background: #fafafa;
+    }
 
-      main {
-        margin-top: 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-      }
+    pre {
+      margin: 10px 0 16px;
+      padding: 12px;
+      border: 1px solid #d9d9d9;
+      background: #f7f7f7;
+      overflow-x: auto;
+    }
 
-      section {
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-left: 4px solid var(--accent);
-        border-radius: 10px;
-        padding: 16px;
-      }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      white-space: pre;
+    }
 
-      h2 {
-        margin: 0 0 10px;
-        font-size: 16px;
-        letter-spacing: 0.2px;
-      }
+    .section {
+      margin-bottom: 26px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>RI 2025 to 2025 Migration</h1>
 
-      p {
-        margin: 10px 0;
-        color: var(--muted);
-      }
+    <div class="section">
+      <h2>Source appliance</h2>
 
-      .note {
-        padding: 10px 12px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: #101010;
-        color: var(--muted);
-        margin: 10px 0 12px;
-      }
+      <div class="note">
+        Run these steps in technician mode.
+      </div>
 
-      .note strong { color: var(--text); font-weight: 650; }
+      <div class="note">
+        Stop the RapidIdentity service on the source appliance before creating the export archive.
+      </div>
 
-      .note.good { border-left: 4px solid var(--good); }
-      .note.warn { border-left: 4px solid var(--warn); }
-      .note.bad  { border-left: 4px solid var(--bad); }
+      <ol>
+        <li>Download and extract the migration bundle.</li>
+      </ol>
 
-      .cmd {
-        margin: 10px 0 14px;
-      }
-
-      .cmdtop {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        margin-bottom: 6px;
-      }
-
-      .label {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      pre {
-        margin: 0;
-        padding: 12px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--codebg);
-        overflow-x: auto;
-      }
-
-      code {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size: 12.5px;
-        color: var(--text);
-        white-space: pre;
-      }
-
-      .btn {
-        appearance: none;
-        border: 1px solid var(--border);
-        background: #0f0f0f;
-        color: var(--text);
-        padding: 7px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 12px;
-      }
-
-      .btn:hover {
-        border-color: var(--accent);
-      }
-
-      .btn:active {
-        transform: translateY(1px);
-      }
-
-      .btn.primary {
-        border-color: var(--accent);
-        background: #151515;
-      }
-
-      .btn.primary:hover {
-        background: #1a1a1a;
-      }
-
-      .small {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 6px;
-      }
-
-      a { color: var(--accent); }
-
-      .toast {
-        position: fixed;
-        right: 16px;
-        bottom: 16px;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-left: 4px solid var(--accent);
-        border-radius: 10px;
-        padding: 10px 12px;
-        color: var(--text);
-        opacity: 0;
-        transform: translateY(8px);
-        transition: opacity 160ms ease, transform 160ms ease;
-        pointer-events: none;
-        max-width: 340px;
-      }
-
-      .toast.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .toast .t {
-        font-size: 12px;
-        color: var(--muted);
-        margin-top: 2px;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="wrap">
-      <header>
-        <h1>RI 2025 to 2025 Migration</h1>
-      </header>
-
-      <main>
-        <section>
-          <h2>Source appliance steps (create export archive in /var/sftp/files)</h2>
-
-          <div class="note warn">
-            <strong>Run in technician mode.</strong>
-            These commands download the bundle, extract it, then generate an export archive in the sftp jail.
-          </div>
-
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Source: download and extract bundle</div>
-              <button class="btn primary" data-copy="src_setup">Copy</button>
-            </div>
-            <pre><code id="src_setup">cd /var/tmp
+      <pre><code>cd /var/tmp
 rm -rf ri2025-migration-bundle ri2025-migration-bundle.tar.gz
 curl -fL -o ri2025-migration-bundle.tar.gz "https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz"
 tar -xzf ri2025-migration-bundle.tar.gz
 cd ri2025-migration-bundle
 chmod 700 *.sh</code></pre>
-          </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Source: export to a filename</div>
-              <button class="btn primary" data-copy="src_export">Copy</button>
-            </div>
-            <pre><code id="src_export">./export-appliance-2025.sh --out-file=ri-export.tar.gz</code></pre>
-          </div>
+      <ol start="2">
+        <li>Create the export archive in <code>/var/sftp/files</code>.</li>
+      </ol>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Source: confirm archive exists</div>
-              <button class="btn" data-copy="src_verify">Copy</button>
-            </div>
-            <pre><code id="src_verify">ls -lh /var/sftp/files/ri-export.tar.gz</code></pre>
-          </div>
+      <pre><code>./export-appliance-2025.sh --out-file=ri-export.tar.gz</code></pre>
 
-          <div class="note good">
-            <strong>Next:</strong>
-            On the target, you will pull <b>files/ri-export.tar.gz</b> from the source via sftp and import it.
-          </div>
-        </section>
+      <ol start="3">
+        <li>Confirm the archive exists.</li>
+      </ol>
 
-        <section>
-          <h2>Target appliance steps (pull archive via sftp and import, always migrate DB)</h2>
+      <pre><code>ls -lh /var/sftp/files/ri-export.tar.gz</code></pre>
 
-          <div class="note warn">
-            <strong>Run in technician mode.</strong>
-            The migration command will prompt for the sftp password.
-          </div>
+      <p>The target appliance will pull <code>files/ri-export.tar.gz</code> from the source by sftp during migration.</p>
+    </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Target: download and extract bundle</div>
-              <button class="btn primary" data-copy="tgt_setup">Copy</button>
-            </div>
-            <pre><code id="tgt_setup">cd /var/tmp
+    <div class="section">
+      <h2>Target appliance preparation</h2>
+
+      <div class="note">
+        Run these steps in technician mode.
+      </div>
+
+      <p>Before running migration, update the hosts file on each target appliance so <code>idautodb</code> resolves correctly.</p>
+
+      <h3>DB appliance</h3>
+      <p>Add <code>idautodb</code> to the localhost entry. Example:</p>
+
+      <pre><code>127.0.0.1 localhost idautodb</code></pre>
+
+      <h3>Non-DB appliance</h3>
+      <p>Add the DB appliance IP entry. Example:</p>
+
+      <pre><code>&lt;db-ip&gt; idautodb</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>Target DB appliance</h2>
+
+      <ol>
+        <li>Download and extract the migration bundle.</li>
+      </ol>
+
+      <pre><code>cd /var/tmp
 rm -rf ri2025-migration-bundle ri2025-migration-bundle.tar.gz
 curl -fL -o ri2025-migration-bundle.tar.gz "https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz"
 tar -xzf ri2025-migration-bundle.tar.gz
 cd ri2025-migration-bundle
 chmod 700 *.sh</code></pre>
-          </div>
 
-          <div class="cmd">
-            <div class="cmdtop">
-              <div class="label">Target: migrate</div>
-              <button class="btn primary" data-copy="tgt_migrate_db">Copy</button>
-            </div>
-            <pre><code id="tgt_migrate_db">./migrate-appliance-2025.sh --src-host=SOURCE_HOST --src-sftp-file=files/ri-export.tar.gz --migrate-db</code></pre>
-            <div class="small">When prompted for the sftp password, enter the password.</div>
-          </div>
-        </section>
-      </main>
+      <ol start="2">
+        <li>Run migration and include the database migration flag.</li>
+      </ol>
+
+      <pre><code>./migrate-appliance-2025.sh --src-host=SOURCE_HOST --src-sftp-file=files/ri-export.tar.gz --migrate-db</code></pre>
+
+      <p>When prompted for the sftp password, enter the password.</p>
     </div>
 
-    <div id="toast" class="toast" role="status" aria-live="polite">
-      <div id="toastTitle">Copied</div>
-      <div id="toastText" class="t"></div>
+    <div class="section">
+      <h2>Target non-DB appliance</h2>
+
+      <ol>
+        <li>Download and extract the migration bundle.</li>
+      </ol>
+
+      <pre><code>cd /var/tmp
+rm -rf ri2025-migration-bundle ri2025-migration-bundle.tar.gz
+curl -fL -o ri2025-migration-bundle.tar.gz "https://ri-docs-files.s3.us-east-1.amazonaws.com/ri2025-migration-bundle.tar.gz"
+tar -xzf ri2025-migration-bundle.tar.gz
+cd ri2025-migration-bundle
+chmod 700 *.sh</code></pre>
+
+      <ol start="2">
+        <li>Run migration without the database migration flag.</li>
+      </ol>
+
+      <pre><code>./migrate-appliance-2025.sh --src-host=SOURCE_HOST --src-sftp-file=files/ri-export.tar.gz</code></pre>
+
+      <p>When prompted for the sftp password, enter the password.</p>
     </div>
-
-    <script>
-      const toast = document.getElementById("toast");
-      const toastTitle = document.getElementById("toastTitle");
-      const toastText = document.getElementById("toastText");
-      let toastTimer = null;
-
-      function showToast(title, text) {
-        toastTitle.textContent = title;
-        toastText.textContent = text || "";
-        toast.classList.add("show");
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toast.classList.remove("show");
-        }, 1400);
-      }
-
-      async function copyText(text) {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-          return;
-        }
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-9999px";
-        textarea.style.top = "0";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-      }
-
-      document.addEventListener("click", async (e) => {
-        const button = e.target.closest("[data-copy]");
-        if (!button) return;
-        const id = button.getAttribute("data-copy");
-        const node = document.getElementById(id);
-        if (!node) {
-          showToast("Copy failed", "Missing block: " + id);
-          return;
-        }
-        const text = node.textContent.replace(/\n+$/, "") + "\n";
-        try {
-          await copyText(text);
-          showToast("Copied", id);
-        } catch (err) {
-          showToast("Copy failed", String(err));
-        }
-      });
-    </script>
-  </body>
+  </div>
+</body>
 </html>
